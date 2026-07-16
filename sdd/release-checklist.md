@@ -1,0 +1,21 @@
+# Release Checklist
+
+- [x] Problem and claim are explicit.
+- [x] Architecture and dependency direction are recorded.
+- [x] OpenSpec proposal, design, spec, and tasks exist.
+- [x] Reuse-kit feature-store guidance is synchronized.
+- [x] Deterministic future-leak and TTL truth exists.
+- [x] Named FeatureService is used.
+- [x] Pure policy and fake-port tests exist.
+- [x] Feast integration and benchmark tests exist.
+- [x] Docker is non-root and credential-free.
+- [ ] Docker image builds with exact dependencies.
+- [ ] Ruff passes in the image.
+- [ ] All tests run without skips in the image.
+- [ ] Coverage meets the CI gate.
+- [ ] Short semantic benchmark passes in the image.
+- [ ] Three full same-image benchmark runs exist.
+- [ ] Shared harness creates `benchmarks/results/summary.json`.
+- [ ] Strict project validation passes.
+- [ ] README number is populated only from committed current evidence.
+- [ ] GitHub Actions is green.

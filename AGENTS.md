@@ -1,55 +1,13 @@
-# Agents
+# Agent Instructions
 
-This repository is governed by `portfolio-reuse-kit`.
+Treat `.portfolio/` as the synchronized decision source and `project.yaml` as the public contract.
 
-Agents must use the local `.portfolio/` snapshot as the source of truth when it exists. If `.portfolio/` is not present, consult the upstream kit before making architectural or stack decisions.
+Before changing implementation, architecture, dependencies, benchmark shape, fixture timestamps, FeatureView TTL, FeatureService, provider, or store:
 
-## Operating Graph
+1. read `.codex/skills/python-feature-store/SKILL.md` or the equivalent Claude skill;
+2. update the active OpenSpec change and the relevant SDD record;
+3. challenge point-in-time correctness, future leakage, TTL, online-value verification, and measurement boundaries;
+4. record whether the change belongs in this repository or the reuse kit;
+5. invalidate benchmark evidence when the signature changes.
 
-Read `.portfolio/decision-brain/agent-graph.yaml` first. The principal agent coordinates these roles:
-
-1. `program-planner`
-2. `architecture-selector`
-3. `engineering-principles-reviewer`
-4. `stack-decision-agent`
-5. `api-style-agent`
-6. `cloud-local-first-agent`
-7. `messaging-agent`
-8. `language-profile-agent`
-9. `benchmark-harness-agent`
-10. `design-system-agent`
-11. `security-reuse-reviewer`
-12. `reuse-improvement-reviewer`
-13. `release-ci-publisher`
-
-If the runtime cannot spawn subagents, the principal agent executes the roles sequentially and records the same outputs.
-
-## Required Before Implementation
-
-- Update `project.yaml`.
-- Fill `sdd/spec.md`.
-- Fill `sdd/architecture-decision.md`.
-- Fill `sdd/technical-decision.md`.
-- Fill `sdd/benchmark-plan.md`.
-- Fill `sdd/agent-handoff.md`.
-- Fill `sdd/reuse-improvement-review.md`.
-
-## Local-First Rule
-
-The default demo must run without paid credentials. Use Docker for the runnable path. Use Kumo for AWS-like local cloud behavior. Real cloud providers must stay behind ports/adapters and must not be imported by domain or use-case code.
-
-## Reuse Improvement Loop
-
-At each major milestone, ask whether this project exposed a reusable improvement for `portfolio-reuse-kit`. Patch low-risk reusable improvements immediately; otherwise record backlog or rejection in `sdd/reuse-improvement-review.md`. Do not leave the review as a template: every ready project must remove placeholder rows and complete the final gate with explicit `[x]` checks.
-
-## Publication Gate
-
-Do not present this repository as portfolio-ready until it has:
-
-- Docker run path
-- benchmark command
-- benchmark JSON in `benchmarks/results/`
-- README opening with project number, claim, and result
-- complete `REFERENCES.md`
-- complete `sdd/reuse-improvement-review.md` with all final gate checks marked
-- passing validation
+Keep Feast, Pandas, PyArrow, SQLite, transport, and cloud imports outside domain and application policy. Do not add Redis, an API server, a broker, orchestration, or cloud unless a measurable requirement justifies it.

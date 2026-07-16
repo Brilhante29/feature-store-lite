@@ -1,41 +1,33 @@
-# Benchmark Plan: feature-store-lite
+# Benchmark Plan
 
-## Hypothesis
+## Primary Metric
 
-feature store minima, measured by online_read_latency_ms.
+`online_read_latency_p95_ms`: the 95th percentile of warmed Python SDK online-read durations.
 
-## Command
+## Fixed Signature
 
-`ash
-pending
-`
+- FeatureService: `customer_risk_v1`.
+- FeatureView: `customer_stats`.
+- Features: four.
+- Entities in fixture: 128.
+- Entity batch size: 32.
+- Warmups: 10.
+- Timed iterations: 300.
+- TTL: 172800 seconds.
+- Offline source: Parquet.
+- Online store: SQLite.
+- Runtime: pinned non-root Docker image.
 
-## Environment
+## Correctness Gates
 
-- OS: pending
-- CPU: pending
-- RAM: pending
-- GPU: pending
-- Docker version: pending
-- Date: pending
+Historical match 1.0, future leaks 0, TTL violations 0, online match 1.0, failures 0. The fixture truth is generated before Feast runs. Eligible historical queries have two later source snapshots; TTL queries must return null.
 
-## Inputs
+## Timing
 
-- fixture: pending
-- dataset size: pending
-- repetitions: pending
-- warmup: pending
+Measure with `perf_counter`. Construct a fresh reader and report its first call separately. Execute warmups. For each measured iteration, start the timer immediately before `get_online_features`, stop immediately after return, then score all values.
 
-## Metrics
+## Evidence
 
-| Metric | Unit | Source | Why it matters |
-|---|---:|---|---|
-| online_read_latency_ms | pending | benchmark script | proves the repo claim |
+Each raw JSON records all latency samples, p50/p95/p99, entity-value throughput, first read, materialization, correctness, source SHA-256, versions, environment, immutable image ID, and benchmark signature.
 
-## Result schema
-
-Output must be JSON and include project, metric, alue, unit, 	imestamp, environment, and command.
-
-## Post angle
-
-#23 feature-store-lite: online_read_latency_ms as a reproducible portfolio benchmark.
+Run the same immutable image at least three times. Aggregate only identical project, metric, unit, image ID, and signature. Publish the median p95 with min, max, and raw results retained.

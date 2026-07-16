@@ -1,0 +1,48 @@
+name: validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate repository contract
+        shell: pwsh
+        run: ./tools/validate-project.ps1 -SkipDocker -AllowPendingEvidence
+
+      - name: Build image
+        run: docker build -t feature-store-lite .
+
+      - name: Lint
+        run: docker run --rm --entrypoint python feature-store-lite -m ruff check src tests
+
+      - name: Test pure policy and Feast adapter
+        run: docker run --rm --entrypoint python feature-store-lite -m pytest --cov=feature_store_lite --cov-report=term-missing --cov-fail-under=90
+
+      - name: Run short semantic benchmark
+        run: |
+          mkdir -p benchmarks/results
+          docker run --rm --user "$(id -u):$(id -g)"             -v "${{ github.workspace }}/benchmarks/results:/app/benchmarks/results"             feature-store-lite benchmark             --entities 8 --batch-size 4 --iterations 3 --warmups 1             --output /app/benchmarks/results/ci.json
+
+      - name: Validate benchmark JSON
+        run: python -m json.tool benchmarks/results/ci.json > /dev/null
+
+      - name: Revalidate contract with CI evidence
+        shell: pwsh
+        run: ./tools/validate-project.ps1 -SkipDocker -AllowPendingEvidence
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: feature-store-lite-ci-benchmark
+          path: benchmarks/results/ci.json
+          if-no-files-found: error

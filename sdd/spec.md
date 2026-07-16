@@ -6,58 +6,46 @@
 
 ## Claim
 
-Este projeto prova que: feature store minima.
+One local-first Docker command proves point-in-time correct historical retrieval, zero future leakage, TTL behavior, deterministic offline-to-online materialization, exact online values, and warmed Feast SDK p95 latency.
 
-## Stack
+## Problem
 
-python, fastapi, postgresql, redis, docker
+Training joins can silently use values created after the prediction timestamp, while serving can return features that differ from training contracts. A latency-only feature-store demo misses both failures.
 
-## User-visible output
+## Input Contract
 
-- Docker command: pending
-- README opens with: # #23 feature-store-lite
-- Benchmark table: online_read_latency_ms
+A deterministic Parquet dataset contains a positive `customer_id`, UTC event and creation timestamps, an increasing snapshot sequence, and three numeric model features. Six daily snapshots exist per entity.
 
-## Scope
+Historical queries carry a stable query ID, entity key, and UTC event timestamp. A two-day FeatureView TTL governs eligibility.
 
-In:
+## Outputs
 
-- Implementar o menor produto funcional que prove o claim.
-- Rodar por Docker.
-- Gerar benchmark JSON reproduzivel.
+- Independent historical truth keyed by query ID.
+- Feast historical result and point-in-time score.
+- Local registry and SQLite online materialization.
+- Exact online-value score.
+- Benchmark JSON with samples, p50/p95/p99, throughput, cold first read, materialization time, hashes, versions, signature, and failures.
 
-Out:
+## In Scope
 
-- Publicar repo antes do primeiro resultado numerico.
-- Depender de segredo pago para o caminho default.
+- Feast local provider.
+- Parquet file source.
+- Local file registry.
+- SQLite online store.
+- Named `customer_risk_v1` FeatureService.
+- Python SDK retrieval.
+- Deterministic correctness and latency evidence.
 
-## Architecture
+## Out Of Scope
 
-`	xt
-client -> app -> domain -> adapters -> benchmark output
-`
+HTTP/GraphQL/gRPC serving, Redis, PostgreSQL, streaming, Airflow, MLflow, Kumo, real cloud, Kubernetes, UI, and feature computation.
 
-## Benchmark
+## Acceptance
 
-Primary metric:
-
-- name: online_read_latency_ms
-- target: first reproducible baseline
-- command: pending
-- result file: enchmarks/results/*.json
-
-## Dataset or fixture
-
-- source: pending
-- size: pending
-- license: pending
-- deterministic seed: 42
-
-## Definition of done
-
-- [ ] Docker command works from clean clone.
-- [ ] README starts with project number and benchmark result.
-- [ ] Benchmark command writes JSON result.
-- [ ] Tests cover core behavior.
-- [ ] REFERENCES.md explains reuse.
-- [ ] No secret or paid credential required for default demo.
+- Historical match rate equals 1.0.
+- Future leak count equals zero.
+- Expected TTL nulls are observed with zero TTL violations.
+- Online value match rate equals 1.0.
+- Every timed response is correctness-checked outside the timing interval.
+- Default Docker path is non-root, offline, and secret-free.
+- README uses only current aggregated Docker evidence.

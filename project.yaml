@@ -1,0 +1,152 @@
+id: 23
+name: feature-store-lite
+program:
+  id: mlops-data-platform
+  narrative_fit: "Supplies #21 with reproducible, point-in-time correct training features and a local online retrieval contract while #26 protects source quality and #22 observes model behavior."
+  shared_assets:
+    - deterministic temporal feature fixture
+    - framework-independent point-in-time oracle
+    - Feast local provider adapter
+    - named customer_risk_v1 FeatureService
+    - offline-to-online materialization proof
+    - semantic online latency benchmark
+status: implemented
+claim: "One local-first Docker command proves point-in-time correct historical retrieval, zero future leakage, TTL behavior, deterministic Parquet-to-SQLite materialization, exact online values, and warmed Feast SDK p95 latency."
+stack:
+  - python-3.12
+  - feast-0.64.0
+  - pandas-2.3.3
+  - pyarrow-25.0.0
+  - parquet
+  - sqlite
+  - docker
+language_profile:
+  primary: python
+  secondary: []
+  reason: "Feast provides the proven registry, point-in-time join, materialization, and online retrieval engine; pure Python defines independent temporal truth and application policy."
+decision_brain:
+  agentic_spec:
+    source: .portfolio/decision-brain/agentic-spec-governance.yaml
+    spec_store: portfolio-reuse-kit
+    schema: portfolio-system
+    project_config: openspec/config.yaml
+    component_pack: mlops-data-platform
+    artifact_graph:
+      - intent->portfolio-impact->architecture-record
+      - architecture-record+portfolio-impact->component-pack
+      - component-pack->reuse-delta->benchmark-proof->tasks->verification
+  agent_graph:
+    mode: principal-agent-orchestrated
+    source: .portfolio/decision-brain/agent-graph.yaml
+    handoff: sdd/agent-handoff.md
+    local_first_runtime: docker
+  reuse_improvement_loop:
+    source: .portfolio/decision-brain/reuse-improvement-loop.yaml
+    review_path: sdd/reuse-improvement-review.md
+    current_status: patched-awaiting-runtime-validation
+  principles:
+    coupling_rule: "Temporal truth, feature vectors, scoring, and application orchestration import no Feast, Pandas, PyArrow, SQLite, Redis, cloud SDK, transport, or UI code."
+    solid: [srp, ocp, lsp, isp, dip]
+    simplicity_rule: "Use one entity, one FeatureView, one named FeatureService, one file source, one local registry, and one SQLite online store; reject services that do not improve the proof."
+    testability_rule: "Point-in-time selection, TTL behavior, materialization expectations, scoring, and benchmark orchestration run against an in-memory fake; Docker verifies the Feast adapter."
+    rejected_overengineering:
+      - custom point-in-time join engine as production implementation
+      - FastAPI feature server
+      - GraphQL or gRPC transport
+      - PostgreSQL or Redis
+      - Airflow or MLflow
+      - Kafka or RabbitMQ
+      - Kumo or real cloud
+      - Kubernetes
+  stack_profile: python-ml
+  api_style: cli
+  messaging: none
+  cloud:
+    mode: none
+    local_provider: none
+    real_provider_target: none
+    emulated_services: []
+    adapter_rule: "The local Feast provider is isolated in one adapter. If a cloud source enters later, verify provider behavior with Kumo where supported and keep SDKs outside domain/application policy."
+    config_switch: not-applicable
+    unsupported_behaviors:
+      - distributed registry
+      - managed offline warehouse
+      - multi-process online serving
+      - cloud IAM
+  database: sqlite
+  runtime: "Single non-root Python 3.12.13 container pinned by OCI digest; deterministic CPU-only benchmark with no credentials or runtime network."
+  library_policy: "Feast owns feature-store semantics; Pandas and PyArrow only serialize deterministic Parquet fixtures and bridge Feast results. SQLite is sufficient for the single-process local latency claim. Redis requires a separate concurrency hypothesis."
+  record_path: sdd/technical-decision.md
+  rejected_options:
+    - option: FastAPI plus custom storage
+      reason: "It would prove HTTP and CRUD behavior, not point-in-time joins, registry semantics, or materialization."
+    - option: Redis online store
+      reason: "No cross-process concurrency, network hop, or multi-instance serving claim exists in this repository."
+    - option: PostgreSQL offline and online stores
+      reason: "The fixture has no SQL analytics, concurrent writers, or persistence requirement beyond one reproducible run."
+    - option: custom feature store
+      reason: "Hand-rolling temporal joins and registry semantics would weaken the proof and violate the proven-library rule."
+architecture:
+  style: pipeline
+  reason: "The dominant force is an ordered evidence flow: define truth, register features, retrieve historical values, materialize, verify online values, warm up, measure, and emit immutable evidence."
+  problem_forces:
+    domain_complexity: medium
+    integration_pressure: medium
+    ui_state_complexity: none
+    data_or_ml_reproducibility: high
+    auditability: high
+    throughput_or_async: medium
+    independent_deployability: low
+  dependency_rule: "The Feast adapter implements the application port and depends inward on immutable domain records; domain and application modules never import feature infrastructure."
+  boundaries:
+    - deterministic temporal fixture and independent oracle
+    - feature-store application port
+    - Feast local-provider adapter
+    - Parquet offline source
+    - local file registry
+    - SQLite online store
+    - correctness and benchmark evidence
+  rejected_alternatives:
+    - style: layered-mvc
+      reason: "There is no controller/view domain; generic layers would hide temporal evidence stages."
+    - style: microservices
+      reason: "Independent deployment and network isolation are not acceptance criteria."
+    - style: event-driven
+      reason: "No stream, window, ordering, or delivery guarantee is measured."
+design_system:
+  tokens: .portfolio/design-system/tokens.yaml
+  readme_components:
+    - readme_header
+    - benchmark_card
+    - architecture_card
+    - references_table
+  diagram_required: true
+reuse:
+  kit_version: feature-store-update-pending-publication
+  uses:
+    - catalog
+    - programs
+    - component-packs
+    - openspec-schema
+    - decision-brain
+    - agent-graph
+    - reuse-improvement-loop
+    - architecture-selector
+    - python-language-profile
+    - python-feature-store
+    - benchmark-contract
+    - semantic-benchmark-aggregator
+    - design-system
+    - sdd
+    - skills
+benchmark:
+  primary_metric: online_read_latency_p95_ms
+  unit: ms
+  command: "docker run --rm feature-store-lite"
+  result_path: benchmarks/results/summary.json
+  evidence_status: pending
+release:
+  docker: "docker run --rm feature-store-lite"
+  no_secret_default_path: true
+  readme_has_number: true
+  references_documented: true
