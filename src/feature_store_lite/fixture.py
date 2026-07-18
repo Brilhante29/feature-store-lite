@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 from feature_store_lite.domain import (
     FeatureRecord,
@@ -10,7 +10,7 @@ from feature_store_lite.domain import (
     historical_truth,
 )
 
-BASE_TIMESTAMP = datetime(2025, 1, 1, tzinfo=timezone.utc)
+BASE_TIMESTAMP = datetime(2025, 1, 1, tzinfo=UTC)
 FEATURE_TTL = timedelta(days=2)
 
 

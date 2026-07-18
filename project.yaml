@@ -10,7 +10,7 @@ program:
     - named customer_risk_v1 FeatureService
     - offline-to-online materialization proof
     - semantic online latency benchmark
-status: implemented
+status: benchmarked
 claim: "One local-first Docker command proves point-in-time correct historical retrieval, zero future leakage, TTL behavior, deterministic Parquet-to-SQLite materialization, exact online values, and warmed Feast SDK p95 latency."
 stack:
   - python-3.12
@@ -144,7 +144,7 @@ benchmark:
   unit: ms
   command: "docker run --rm feature-store-lite"
   result_path: benchmarks/results/summary.json
-  evidence_status: pending
+  evidence_status: current
 release:
   docker: "docker run --rm feature-store-lite"
   no_secret_default_path: true

@@ -1,10 +1,10 @@
 # #23 feature-store-lite
 
-**Evidence status:** implementation complete; publishable Docker benchmark pending.
+**Evidence status:** Docker benchmark reproduced in three identical runs; evidence is current.
 
 **Proves:** point-in-time correct historical features, zero future leakage, TTL behavior, deterministic offline-to-online materialization, exact online values, and warmed Feast SDK latency.
 
-**Primary benchmark:** online read p95 in milliseconds for 32 entities and four features.
+**Primary benchmark:** online read p95 = 14.985742505814416 ms (median of 3 runs; min 14.436810590268578 ms; max 16.341100465797354 ms).
 
 ## Run
 
@@ -21,14 +21,14 @@ The measured boundary contains only warmed `FeatureStore.get_online_features` ca
 
 | Metric | Current evidence | Gate |
 |---|---:|---:|
-| Online read p95 | pending Docker run | reported, not thresholded |
-| Point-in-time match | pending Docker run | 100% |
-| Future leaks | pending Docker run | 0 |
-| TTL violations | pending Docker run | 0 |
-| Online value match | pending Docker run | 100% |
-| Failures | pending Docker run | 0 |
+| Online read p95 | 14.985742505814416 ms (median; min 14.436810590268578; max 16.341100465797354) | reported, not thresholded |
+| Point-in-time match | 100% in all 3 runs | 100% |
+| Future leaks | 0 in all 3 runs | 0 |
+| TTL violations | 0 in all 3 runs | 0 |
+| Online value match | 100% in all 3 runs | 100% |
+| Failures | 0 in all 3 runs | 0 |
 
-A README number is promoted only from the median of at least three raw runs produced by the same immutable image and benchmark signature. Until Docker is available, no host measurement is presented as portfolio evidence.
+A README number is promoted only from the median of at least three raw runs produced by the same immutable image and benchmark signature. This evidence satisfies that gate with image sha256:06169c2510bc9b542e33a66747f182848078e87de7e82bea5b2695366f5b78e8; raw results are retained as benchmarks/results/raw-1.json, raw-2.json, and raw-3.json.
 
 ## What Is Proved
 

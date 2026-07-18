@@ -1,5 +1,4 @@
 import json
-from pathlib import Path
 
 from feature_store_lite import cli
 

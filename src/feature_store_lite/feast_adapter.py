@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 import hashlib
+from collections.abc import Sequence
 from datetime import datetime
 from importlib.metadata import version
 from pathlib import Path
 from time import perf_counter
-from typing import Any, Sequence
+from typing import Any
 
 import pandas as pd
 import pyarrow
@@ -13,7 +14,6 @@ from feast import Entity, FeatureService, FeatureStore, FeatureView, Field, File
 from feast.types import Float64, Int64
 
 from feature_store_lite.domain import (
-    FEATURE_NAMES,
     FeatureRecord,
     FeatureVector,
     HistoricalQuery,
@@ -145,11 +145,15 @@ class FeastFeatureStore:
             features=service,
         ).to_df()
         columns = result.to_dict(orient="list")
-        query_ids = columns["query_id"]
-        return {
-            str(query_id): _vector_from_columns(columns, index)
-            for index, query_id in enumerate(query_ids)
-        }
+        query_ids = columns.get("query_id", [])
+        output = {query.query_id: None for query in queries}
+        output.update(
+            {
+                str(query_id): _vector_from_columns(columns, index)
+                for index, query_id in enumerate(query_ids)
+            }
+        )
+        return output
 
     def materialize(self, start: datetime, end: datetime) -> float:
         started = perf_counter()

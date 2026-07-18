@@ -1,9 +1,6 @@
-from pathlib import Path
-
 import importlib.util
 import unittest
-
-import pytest
+from pathlib import Path
 
 if importlib.util.find_spec("feast") is None:
     raise unittest.SkipTest("Feast integration requires the Docker dependency set")

@@ -1,7 +1,6 @@
-from pathlib import Path
-
 import importlib.util
 import unittest
+from pathlib import Path
 
 import pytest
 

@@ -4,9 +4,9 @@ import argparse
 import json
 import os
 import sys
-from datetime import datetime, timezone
+from collections.abc import Sequence
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Sequence
 
 from feature_store_lite.benchmark import run_benchmark
 
@@ -54,7 +54,7 @@ def main() -> int:
     except Exception as error:
         failure = {
             "project": "feature-store-lite",
-            "timestamp": datetime.now(timezone.utc)
+            "timestamp": datetime.now(UTC)
             .isoformat()
             .replace("+00:00", "Z"),
             "error_type": type(error).__name__,

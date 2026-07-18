@@ -1,9 +1,9 @@
 from __future__ import annotations
 
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from math import isclose
-from typing import Mapping, Sequence
 
 FEATURE_NAMES = (
     "snapshot_sequence",

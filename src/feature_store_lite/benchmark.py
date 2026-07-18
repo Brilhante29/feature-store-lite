@@ -4,7 +4,7 @@ import json
 import os
 import platform
 import tempfile
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -57,7 +57,7 @@ def run_benchmark(
             "metric": "online_read_latency_p95_ms",
             "value": online.p95_ms,
             "unit": "ms",
-            "timestamp": datetime.now(timezone.utc)
+            "timestamp": datetime.now(UTC)
             .isoformat()
             .replace("+00:00", "Z"),
             "command": command,
