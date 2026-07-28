@@ -13,7 +13,7 @@ known portfolio risk.
 
 ## Scope
 
-- In scope: <scope>
+- In scope: Point-in-time feature retrieval, zero data leakage, Parquet-to-SQLite materialization, and local benchmark execution.
 - Out of scope: paid credentials, unrelated infrastructure, and unmeasured features.
 
 ## Portfolio Impact
