@@ -83,14 +83,22 @@ for ($run = 1; $run -le $Repetitions; $run++) {
   if ($LASTEXITCODE -ne 0) { throw "Docker benchmark repetition $run failed" }
 }
 
-$rawPaths = @(Get-ChildItem -LiteralPath $results -Filter "run-*.json" -File | Sort-Object Name | ForEach-Object FullName)
+$rawNames = @(Get-ChildItem -LiteralPath $results -Filter "run-*.json" -File | Sort-Object Name | ForEach-Object Name)
 $aggregateArgs = @(
-  (Join-Path $PSScriptRoot "aggregate_results.py"),
+  "run", "--rm", "--entrypoint", "python",
+  "--mount", "type=bind,source=$resolvedResults,target=/app/benchmarks/results"
+)
+if ($isLinuxHost) {
+  $aggregateArgs += @("--user", "${hostUid}:${hostGid}")
+}
+$aggregateArgs += @(
+  $Image,
+  "/app/tools/aggregate_results.py",
   "--project", "feature-store-lite",
   "--metric", "online_read_latency_p95_ms",
   "--unit", "ms",
   "--signature-path", "proof.benchmark_signature",
-  "--output", $summaryPath
+  "--output", "/app/benchmarks/results/summary.json"
 )
 foreach ($name in @(
   "online_read_p50_ms", "online_read_p95_ms", "online_read_p99_ms",
@@ -99,8 +107,8 @@ foreach ($name in @(
 )) {
   $aggregateArgs += @("--summary-metric", $name)
 }
-$aggregateArgs += $rawPaths
-python @aggregateArgs | Out-Null
+$aggregateArgs += @($rawNames | ForEach-Object { "/app/benchmarks/results/$_" })
+docker @aggregateArgs | Out-Null
 if ($LASTEXITCODE -ne 0) { throw "Benchmark aggregation failed" }
 
 $producer = if ($env:GITHUB_ACTIONS -eq "true") { "github-actions" } else { "local" }
