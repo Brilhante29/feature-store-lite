@@ -37,6 +37,7 @@ def test_cli_passes_explicit_benchmark_shape(monkeypatch, tmp_path, capsys):
     assert captured["batch_size"] == 4
     assert captured["iterations"] == 5
     assert captured["warmups"] == 2
+    assert captured["validated_batch_manifest"] is None
     assert json.loads(capsys.readouterr().out)["value"] == 1.25
 
 

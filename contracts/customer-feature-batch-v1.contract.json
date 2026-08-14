@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "contract_id": "customer-feature-batch-v1",
+  "record_format": "csv",
+  "columns": [
+    { "name": "customer_id", "type": "integer", "nullable": false, "role": "entity_key" },
+    { "name": "event_timestamp", "type": "datetime-utc", "nullable": false, "role": "event_timestamp" },
+    { "name": "created_timestamp", "type": "datetime-utc", "nullable": false, "role": "created_timestamp" },
+    { "name": "snapshot_sequence", "type": "integer", "nullable": false, "role": "feature" },
+    { "name": "transaction_count_7d", "type": "integer", "nullable": false, "role": "feature" },
+    { "name": "average_order_value_30d", "type": "number", "nullable": false, "role": "feature" },
+    { "name": "chargeback_rate_30d", "type": "number", "nullable": false, "role": "feature" }
+  ],
+  "entity": "customer",
+  "feature_service": "customer_risk_v1"
+}

@@ -1,0 +1,14 @@
+{
+  "benchmark_id": "feast-online-read",
+  "entity_count": 128,
+  "entity_batch_size": 32,
+  "measured_requests_per_repetition": 300,
+  "warmup_requests": 10,
+  "repetitions": 3,
+  "concurrency": 1,
+  "feature_count": 4,
+  "feature_service": "customer_risk_v1",
+  "offline_store": "parquet",
+  "online_store": "sqlite",
+  "measured_boundary": "warmed Feast SDK get_online_features call"
+}

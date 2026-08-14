@@ -19,6 +19,7 @@ def build_parser() -> argparse.ArgumentParser:
     benchmark.add_argument("--batch-size", type=int, default=32)
     benchmark.add_argument("--iterations", type=int, default=300)
     benchmark.add_argument("--warmups", type=int, default=10)
+    benchmark.add_argument("--validated-batch-manifest", type=Path)
     benchmark.add_argument(
         "--output",
         type=Path,
@@ -43,6 +44,7 @@ def run(argv: Sequence[str] | None = None) -> int:
         batch_size=args.batch_size,
         iterations=args.iterations,
         warmups=args.warmups,
+        validated_batch_manifest=args.validated_batch_manifest,
     )
     print(json.dumps(result, indent=2, sort_keys=True))
     return 0

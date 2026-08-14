@@ -16,7 +16,15 @@ def imported_roots(path: Path) -> set[str]:
 
 
 def test_domain_and_application_do_not_depend_on_feature_infrastructure():
-    forbidden = {"feast", "pandas", "pyarrow", "fastapi", "redis", "boto3"}
+    forbidden = {
+        "boto3",
+        "fastapi",
+        "feast",
+        "jsonschema",
+        "pandas",
+        "pyarrow",
+        "redis",
+    }
     for filename in ("domain.py", "fixture.py", "ports.py", "application.py"):
         assert imported_roots(PACKAGE / filename).isdisjoint(forbidden)
 

@@ -55,14 +55,29 @@ $requiredFiles = @(
   "sdd/architecture-decision.md",
   "sdd/technical-decision.md",
   "sdd/agent-handoff.md",
-  "sdd/reuse-improvement-review.md"
+  "sdd/reuse-improvement-review.md",
+  "constraints.lock",
+  "contracts/customer-feature-batch-v1.contract.json",
+  "contracts/validated-batch-manifest-v1.schema.json",
+  "benchmarks/workload.json",
+  "tools/benchmark.ps1",
+  "tools/build_v2_evidence.py"
 )
 foreach ($file in $requiredFiles) { Require-File $file }
+
+$gitignorePath = Join-Path $root ".gitignore"
+if (Test-Path -LiteralPath $gitignorePath -PathType Leaf) {
+  $gitignoreText = Get-Content -Raw -LiteralPath $gitignorePath
+  if (-not $gitignoreText.Contains("*.egg-info/")) {
+    Add-Failure ".gitignore must exclude editable-install metadata (*.egg-info/)"
+  }
+}
 
 $manifestPath = Join-Path $root "project.yaml"
 $manifestPrimaryMetric = ""
 $manifestResultPath = ""
 $manifestEvidenceStatus = ""
+$manifestPublicationResultPath = ""
 if (Test-Path -LiteralPath $manifestPath -PathType Leaf) {
   $manifestText = Get-Content -Raw -LiteralPath $manifestPath
   if ($manifestText.Contains("`t")) {
@@ -96,6 +111,15 @@ if (Test-Path -LiteralPath $manifestPath -PathType Leaf) {
   } else {
     Add-Failure "project.yaml is missing benchmark.result_path"
   }
+  $publicationResultPathMatch = [regex]::Match(
+    $manifestText,
+    "(?m)^\s+publication_result_path:\s*([^\r\n#]+)"
+  )
+  if ($publicationResultPathMatch.Success) {
+    $manifestPublicationResultPath = $publicationResultPathMatch.Groups[1].Value.Trim().Trim('"').Trim("'")
+  } else {
+    Add-Failure "project.yaml is missing benchmark.publication_result_path"
+  }
   $evidenceStatusMatch = [regex]::Match(
     $manifestText,
     "(?m)^\s+evidence_status:\s*([^\r\n#]+)"
@@ -118,6 +142,92 @@ if (Test-Path -LiteralPath $manifestPath -PathType Leaf) {
       Invoke-Checked "project YAML parsing" { python -c "import pathlib, sys, yaml; data = yaml.safe_load(pathlib.Path(sys.argv[1]).read_text(encoding='utf-8')); assert isinstance(data, dict)" $manifestPath }
     } else {
       Write-Host "yaml_parser=not_found; structural manifest validation applied"
+    }
+  }
+}
+
+if ($manifestPublicationResultPath -ne "") {
+  $publicationResultPath = Join-Path $root ($manifestPublicationResultPath -replace '/', [IO.Path]::DirectorySeparatorChar)
+  if (-not (Test-Path -LiteralPath $publicationResultPath -PathType Leaf)) {
+    if (-not $AllowPendingEvidence) {
+      Add-Failure "Missing V2 publication result: $manifestPublicationResultPath"
+    }
+  } else {
+    try {
+      $publicationResult = Get-Content -Raw -LiteralPath $publicationResultPath | ConvertFrom-Json
+      if ($publicationResult.schema_version -ne 2) {
+        Add-Failure "Publication result must use benchmark schema V2"
+      }
+      $workloadConfigPath = Join-Path $root "benchmarks/workload.json"
+      $workloadConfig = Get-Content -Raw -LiteralPath $workloadConfigPath | ConvertFrom-Json
+      if ($publicationResult.workload.measured_iterations -ne $workloadConfig.measured_requests_per_repetition) {
+        Add-Failure "Canonical V2 measured_iterations must match benchmark requests"
+      }
+      if ($publicationResult.workload.warmup_iterations -ne $workloadConfig.warmup_requests) {
+        Add-Failure "Canonical V2 warmup_iterations must match benchmark warmups"
+      }
+      if ($publicationResult.execution.repeat -ne $workloadConfig.repetitions) {
+        Add-Failure "Canonical V2 repeat must match benchmarks/workload.json"
+      }
+      foreach ($metric in @($publicationResult.metrics)) {
+        if (@($metric.samples).Count -ne $publicationResult.execution.repeat) {
+          Add-Failure "V2 metric $($metric.name) must retain one sample per repetition"
+        }
+        if ($metric.failures -ne 0) {
+          Add-Failure "V2 metric $($metric.name) records failures=$($metric.failures)"
+        }
+      }
+      if ($publicationResult.provenance.clean_tree -ne $true) {
+        Add-Failure "V2 provenance must record a clean source tree"
+      }
+      if ([string]$publicationResult.provenance.source_commit -notmatch '^[0-9a-f]{40}$') {
+        Add-Failure "V2 source_commit must be an exact Git SHA"
+      } else {
+        & git -C $root cat-file -e "$($publicationResult.provenance.source_commit)^{commit}" 2>$null
+        if ($LASTEXITCODE -ne 0) { Add-Failure "V2 source_commit is not present in repository history" }
+        $global:LASTEXITCODE = 0
+      }
+      foreach ($digestField in @("image_digest", "dependency_lock_digest", "artifact_digest")) {
+        if ([string]$publicationResult.provenance.$digestField -notmatch '^sha256:[0-9a-f]{64}$') {
+          Add-Failure "V2 provenance.$digestField must be a sha256 digest"
+        }
+      }
+      $primaryMetric = @($publicationResult.metrics | Where-Object name -eq $manifestPrimaryMetric)
+      if ($primaryMetric.Count -ne 1) {
+        Add-Failure "V2 publication result must contain primary metric $manifestPrimaryMetric exactly once"
+      }
+      if ([string]$publicationResult.comparability_key -notmatch 'entities-\d+:batch-\d+:requests-\d+:warmups-\d+') {
+        Add-Failure "V2 comparability key must encode the effective feature-store workload"
+      }
+      $schemaPath = Join-Path $root ".portfolio/contracts/benchmark-result-v2.schema.json"
+      Invoke-Checked "V2 JSON Schema validation" {
+        python -c "import json,sys; from jsonschema import Draft202012Validator,FormatChecker; schema=json.load(open(sys.argv[1],encoding='utf-8')); value=json.load(open(sys.argv[2],encoding='utf-8')); Draft202012Validator(schema,format_checker=FormatChecker()).validate(value)" $schemaPath $publicationResultPath
+      }
+    } catch {
+      Add-Failure "Cannot validate V2 publication result: $($_.Exception.Message)"
+    }
+  }
+}
+
+$dockerfilePath = Join-Path $root "Dockerfile"
+if (Test-Path -LiteralPath $dockerfilePath -PathType Leaf) {
+  $dockerfileText = Get-Content -Raw -LiteralPath $dockerfilePath
+  foreach ($literal in @("constraints.lock", "--no-index", "/opt/wheels", "contracts")) {
+    if (-not $dockerfileText.Contains($literal)) {
+      Add-Failure "Dockerfile is missing locked artifact guard: $literal"
+    }
+  }
+}
+
+$workflowPath = Join-Path $root ".github/workflows/validate.yml"
+if (Test-Path -LiteralPath $workflowPath -PathType Leaf) {
+  $workflowText = Get-Content -Raw -LiteralPath $workflowPath
+  if ($workflowText.Contains("-AllowPendingEvidence")) {
+    Add-Failure "CI must not allow pending publication evidence"
+  }
+  foreach ($literal in @('fetch-depth: 0', 'RUNNER_TEMP', 'actions/upload-artifact@', './tools/benchmark.ps1')) {
+    if (-not $workflowText.Contains($literal)) {
+      Add-Failure "CI is missing isolated V2 smoke evidence guard: $literal"
     }
   }
 }

@@ -10,6 +10,8 @@ program:
     - named customer_risk_v1 FeatureService
     - offline-to-online materialization proof
     - semantic online latency benchmark
+    - validated batch manifest v1 consumer
+    - feature-store V2 publication evidence
 status: benchmarked
 claim: "One local-first Docker command proves point-in-time correct historical retrieval, zero future leakage, TTL behavior, deterministic Parquet-to-SQLite materialization, exact online values, and warmed Feast SDK p95 latency."
 stack:
@@ -43,7 +45,7 @@ decision_brain:
   reuse_improvement_loop:
     source: .portfolio/decision-brain/reuse-improvement-loop.yaml
     review_path: sdd/reuse-improvement-review.md
-    current_status: patched-awaiting-runtime-validation
+    current_status: patched-awaiting-publication-evidence
   principles:
     coupling_rule: "Temporal truth, feature vectors, scoring, and application orchestration import no Feast, Pandas, PyArrow, SQLite, Redis, cloud SDK, transport, or UI code."
     solid: [srp, ocp, lsp, isp, dip]
@@ -122,7 +124,7 @@ design_system:
     - references_table
   diagram_required: true
 reuse:
-  kit_version: feature-store-update-pending-publication
+  kit_version: portfolio-reuse-kit@2d92dcc
   uses:
     - catalog
     - programs
@@ -144,7 +146,8 @@ benchmark:
   unit: ms
   command: "docker run --rm feature-store-lite"
   result_path: benchmarks/results/summary.json
-  evidence_status: current
+  publication_result_path: benchmarks/publication/feature-store-v2.json
+  evidence_status: pending
 release:
   docker: "docker run --rm feature-store-lite"
   no_secret_default_path: true

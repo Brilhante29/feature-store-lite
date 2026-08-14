@@ -82,3 +82,24 @@ def build_fixture(entity_count: int = 128, snapshots: int = 6) -> FeatureFixture
         materialization_start=BASE_TIMESTAMP,
         materialization_end=BASE_TIMESTAMP + timedelta(days=snapshots - 1, hours=1),
     )
+
+
+def fixture_with_records(
+    template: FeatureFixture,
+    records: tuple[FeatureRecord, ...],
+) -> FeatureFixture:
+    if not records:
+        raise ValueError("validated feature records cannot be empty")
+    expected_entities = {query.customer_id for query in template.queries}
+    actual_entities = {record.customer_id for record in records}
+    if not expected_entities.issubset(actual_entities):
+        raise ValueError("validated batch does not contain every queried entity")
+    start = min(record.event_timestamp for record in records)
+    end = max(record.event_timestamp for record in records) + timedelta(hours=1)
+    return FeatureFixture(
+        records=records,
+        queries=template.queries,
+        historical_expected=historical_truth(records, template.queries, FEATURE_TTL),
+        materialization_start=start,
+        materialization_end=end,
+    )

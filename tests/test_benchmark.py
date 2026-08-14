@@ -27,4 +27,9 @@ def test_benchmark_writes_semantic_evidence(tmp_path: Path):
     assert result["metrics"]["ttl_violations"] == 0
     assert result["metrics"]["online_value_match_rate"] == 1.0
     assert result["proof"]["entity_batch_size"] == 4
+    assert result["proof"]["validated_batch"]["quality_status"] == "passed"
+    assert result["proof"]["validated_batch"]["accepted_rows"] == 48
+    assert result["proof"]["benchmark_signature"]["validated_batch_digest"].startswith(
+        "sha256:"
+    )
     assert output.is_file()

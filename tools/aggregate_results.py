@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 from copy import deepcopy
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from statistics import median
 from typing import Any
@@ -60,10 +60,10 @@ def aggregate_results(
         raise ValueError("all runs must contain the same benchmark signature")
 
     result = deepcopy(loaded[0])
-    result["timestamp"] = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+    result["timestamp"] = datetime.now(UTC).isoformat().replace("+00:00", "Z")
     result["value"] = median(float(item["value"]) for item in loaded)
     result["repeat"] = len(loaded)
-    result["results"] = [path.as_posix() for path in paths]
+    result["results"] = [path.name for path in paths]
     result["environment"]["aggregated_runs"] = len(loaded)
     result["summary"] = {}
     result["metrics"] = {}
