@@ -24,7 +24,8 @@ This repository is not a standalone demo. It is one part of the MLOps and Data P
 - parquet
 - sqlite
 - docker
+- jsonschema-4.26.0
 
 ## Post Angle
 
-Open with online_read_latency_p95_ms = pending ms, then explain why the architecture and local-first path make the result reproducible.
+Open with online_read_latency_p95_ms = 45.65 ms and 1,061.95 entity values/s, then show how #26's validated batch crosses a versioned contract into #23 without source coupling.

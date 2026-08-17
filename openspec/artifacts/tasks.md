@@ -13,11 +13,11 @@
 - [x] Implement the measurable claim without breaking the recorded architecture boundary.
 - [x] Keep local skills and `.portfolio/` as primary.
 - [x] Record external references in `REFERENCES.md`.
-- [ ] Commit benchmark JSON and the matching README number.
+- [x] Commit benchmark JSON and the matching README number.
 
 ## Publication
 
-- [ ] Validate project.
+- [x] Validate project.
 - [ ] Confirm published CI is green.
-- [ ] Confirm article uses committed benchmark result.
-- [ ] Confirm `voice-check.md` verdict is aligned or intentionally overridden.
+- [x] Confirm article uses committed benchmark result.
+- [x] Confirm `voice-check.md` verdict is aligned or intentionally overridden.

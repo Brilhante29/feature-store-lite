@@ -2,9 +2,9 @@
 
 ## Flow
 
-1. Build deterministic records and historical queries.
-2. Compute truth with a pure backward-time oracle and two-day TTL.
-3. Write records to Parquet.
+1. Build a contract-valid deterministic batch plus `validated-batch-manifest-v1`.
+2. Verify contract/artifact digests, row reconciliation, and path confinement, then load records.
+3. Compute truth with a pure backward-time oracle and two-day TTL, then write records to Parquet.
 4. Apply entity, FeatureView, and `customer_risk_v1` FeatureService to Feast.
 5. Retrieve historical features and score exact vectors.
 6. Materialize the full source interval into SQLite.

@@ -24,7 +24,7 @@ Customer feature formulas, entity count, timestamps, FeatureService name, and be
 
 ## Status
 
-Patched in staging and validated. Runtime behavior must still be verified in Docker before the kit change and project are published.
+Patched and runtime-validated. The project added three reusable findings: a versioned validated-batch manifest between #26 and #23, effective workload configuration in V2 evidence, and aggregation inside the pinned image so host Python versions cannot change publication behavior. Project-specific temporal truth remains local.
 
 ## Final Gate
 

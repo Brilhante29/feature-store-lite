@@ -9,13 +9,13 @@
 - [x] Pure policy and fake-port tests exist.
 - [x] Feast integration and benchmark tests exist.
 - [x] Docker is non-root and credential-free.
-- [ ] Docker image builds with exact dependencies.
-- [ ] Ruff passes in the image.
-- [ ] All tests run without skips in the image.
-- [ ] Coverage meets the CI gate.
-- [ ] Short semantic benchmark passes in the image.
-- [ ] Three full same-image benchmark runs exist.
-- [ ] Shared harness creates `benchmarks/results/summary.json`.
-- [ ] Strict project validation passes.
-- [ ] README number is populated only from committed current evidence.
+- [x] Docker image builds with exact dependencies.
+- [x] Ruff passes in the image.
+- [x] All tests run without skips in the image.
+- [x] Coverage meets the CI gate (91.09%).
+- [x] Short semantic benchmark passes in the image.
+- [x] Three full same-image benchmark runs exist.
+- [x] Pinned-runtime harness creates `benchmarks/results/summary.json` and V2 evidence.
+- [x] Strict project validation passes.
+- [x] README number is populated only from committed current evidence.
 - [ ] GitHub Actions is green.

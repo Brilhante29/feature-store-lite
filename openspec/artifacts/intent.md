@@ -29,5 +29,6 @@ Supplies #21 with reproducible, point-in-time correct training features and a lo
 
 ## Public Proof
 
-- Benchmark: online_read_latency_p95_ms = pending ms
+- Benchmark: online_read_latency_p95_ms = 45.645578341645894 ms
 - Result path: `benchmarks/results/summary.json`
+- Publication evidence: `benchmarks/publication/feature-store-v2.json`

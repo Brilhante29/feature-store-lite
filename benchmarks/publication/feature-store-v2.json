@@ -1,0 +1,187 @@
+{
+  "benchmark_id": "feast-online-read",
+  "comparability_key": "feature-store-lite:customer-risk-v1:entities-128:batch-32:requests-300:warmups-10:feast-0_64_0:sqlite",
+  "environment": {
+    "architecture": "x86_64",
+    "container_platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.41",
+    "feast": "0.64.0",
+    "hardware_class": "desktop-docker-wsl2",
+    "online_store": "sqlite",
+    "pandas": "2.3.3",
+    "pyarrow": "25.0.0",
+    "runtime": "python-3.12.13"
+  },
+  "execution": {
+    "command": "./tools/benchmark.ps1 -Entities 128 -BatchSize 32 -Iterations 300 -Warmups 10 -Repetitions 3",
+    "duration_seconds": 43.58354921700084,
+    "exit_code": 0,
+    "repeat": 3,
+    "started_at": "2026-08-14T06:12:32.537791Z"
+  },
+  "metrics": [
+    {
+      "direction": "lower_is_better",
+      "failures": 0,
+      "name": "online_read_latency_p95_ms",
+      "samples": [
+        45.645578341645894,
+        53.02158489648719,
+        38.05325084831566
+      ],
+      "summary": {
+        "max": 53.02158489648719,
+        "mean": 45.57347136214958,
+        "median": 45.645578341645894,
+        "min": 38.05325084831566
+      },
+      "unit": "milliseconds",
+      "value": 45.645578341645894
+    },
+    {
+      "direction": "lower_is_better",
+      "failures": 0,
+      "name": "online_read_latency_p50_ms",
+      "samples": [
+        28.85924700240139,
+        28.145545496954583,
+        24.11077549913898
+      ],
+      "summary": {
+        "max": 28.85924700240139,
+        "mean": 27.038522666164983,
+        "median": 28.145545496954583,
+        "min": 24.11077549913898
+      },
+      "unit": "milliseconds",
+      "value": 28.145545496954583
+    },
+    {
+      "direction": "lower_is_better",
+      "failures": 0,
+      "name": "online_read_latency_p99_ms",
+      "samples": [
+        57.44272006399114,
+        73.58392365451435,
+        47.54365962813608
+      ],
+      "summary": {
+        "max": 73.58392365451435,
+        "mean": 59.52343444888052,
+        "median": 57.44272006399114,
+        "min": 47.54365962813608
+      },
+      "unit": "milliseconds",
+      "value": 57.44272006399114
+    },
+    {
+      "direction": "higher_is_better",
+      "failures": 0,
+      "name": "online_entity_values_per_second",
+      "samples": [
+        1061.9468119765338,
+        1056.4838356094779,
+        1251.1853095851475
+      ],
+      "summary": {
+        "max": 1251.1853095851475,
+        "mean": 1123.205319057053,
+        "median": 1061.9468119765338,
+        "min": 1056.4838356094779
+      },
+      "unit": "entity_values_per_second",
+      "value": 1061.9468119765338
+    },
+    {
+      "direction": "higher_is_better",
+      "failures": 0,
+      "name": "point_in_time_match_rate",
+      "samples": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "summary": {
+        "max": 1.0,
+        "mean": 1.0,
+        "median": 1.0,
+        "min": 1.0
+      },
+      "unit": "ratio",
+      "value": 1.0
+    },
+    {
+      "direction": "higher_is_better",
+      "failures": 0,
+      "name": "online_value_match_rate",
+      "samples": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "summary": {
+        "max": 1.0,
+        "mean": 1.0,
+        "median": 1.0,
+        "min": 1.0
+      },
+      "unit": "ratio",
+      "value": 1.0
+    },
+    {
+      "direction": "target",
+      "failures": 0,
+      "name": "future_leak_count",
+      "samples": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "summary": {
+        "max": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0
+      },
+      "unit": "count",
+      "value": 0.0
+    },
+    {
+      "direction": "target",
+      "failures": 0,
+      "name": "ttl_violation_count",
+      "samples": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "summary": {
+        "max": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0
+      },
+      "unit": "count",
+      "value": 0.0
+    }
+  ],
+  "project": "feature-store-lite",
+  "provenance": {
+    "artifact_digest": "sha256:eae158ceb9e9b1edbb02713025a4ca255ff776f7179b3ad5ac0be35d5efba5a9",
+    "clean_tree": true,
+    "dependency_lock_digest": "sha256:89f4f650a2ef39d6afa100ff03f396bd61805b2c72a041c5381c367fc5db4bd2",
+    "image_digest": "sha256:cf84e303a901636d32baf1900565425f261664a2ce0575267a4daf8b334224bc",
+    "image_ref": "feature-store-lite:benchmark",
+    "producer": "local",
+    "source_commit": "10641d32af027761aec62c23b0586b3c1a10992f"
+  },
+  "run_id": "27078525-cc90-4f3b-8cad-eb9ccd9c2483",
+  "schema_version": 2,
+  "workload": {
+    "concurrency": 1,
+    "config_digest": "sha256:f16a5e839de1711e66c47f1e2076278892cf3f90dd5b095861a6bad7acdc6e24",
+    "fixture_digest": "sha256:e1f3cc199f244620cae1bcd8829c925641e020f555aff241b680006290d25078",
+    "measured_iterations": 300,
+    "version": "customer-risk-features-v1",
+    "warmup_iterations": 10
+  }
+}

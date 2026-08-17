@@ -10,9 +10,9 @@
 - [x] Implement warmed semantic latency benchmark.
 - [x] Add Docker, CI, README, SDD, references, and project contract.
 - [x] Improve and validate the reuse kit.
-- [ ] Build the Docker image.
-- [ ] Run lint, full tests without skips, and coverage.
-- [ ] Record immutable image and dependency freeze.
-- [ ] Produce and aggregate three full benchmark runs.
-- [ ] Pass strict validation.
+- [x] Build the Docker image.
+- [x] Run lint, full tests without skips, and coverage.
+- [x] Record immutable image and dependency freeze.
+- [x] Produce and aggregate three full benchmark runs.
+- [x] Pass strict validation.
 - [ ] Synchronize, commit, push, and verify GitHub Actions.

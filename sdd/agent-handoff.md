@@ -2,20 +2,15 @@
 
 ## Current State
 
-Implementation, pure tests, Feast integration tests, Dockerfile, CI, SDD, and OpenSpec are complete in staging. Docker execution, immutable image evidence, aggregation, strict validation, Desktop synchronization, commit, push, and GitHub Actions remain blocked by the current environment limit.
+The repository is implementation-complete and publication evidence is current. Docker verification passes with 23 tests and 91.09% coverage. Three canonical runs from source `10641d32af027761aec62c23b0586b3c1a10992f` produced p95 median 45.645578341645894 ms, 100% historical and online correctness, zero future leaks, and zero TTL violations.
 
 ## Next Agent Procedure
 
-1. Read `project.yaml`, `sdd/benchmark-plan.md`, and the feature-store skill.
-2. Build `feature-store-lite`.
-3. Run Ruff and all tests in the image; no Feast adapter test may skip.
-4. Inspect dependency freeze and image ID.
-5. Run one short semantic benchmark and validate JSON.
-6. Run three full benchmarks from the same image with unique output names and `IMAGE_ID` set.
-7. Aggregate through `.portfolio/harness/aggregate_results.py` using `proof.benchmark_signature`.
-8. Run strict `tools/validate-project.ps1`.
-9. Update README only from `summary.json`.
-10. Re-run validation, publish, and inspect Actions.
+1. Read `project.yaml`, `sdd/benchmark-plan.md`, and `benchmarks/publication/feature-store-v2.json`.
+2. Run `./tools/validate-project.ps1` before changing the project.
+3. For runtime changes, commit first and rerun `./tools/benchmark.ps1`; never edit evidence by hand.
+4. Keep `validated-batch-manifest-v1` compatible with #26 and fail closed on contract, digest, reconciliation, or path violations.
+5. Keep README numbers synchronized with the committed V2 evidence and verify the exact published SHA in GitHub Actions.
 
 ## Do Not
 

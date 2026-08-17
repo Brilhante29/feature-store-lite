@@ -16,9 +16,11 @@
 ## Checks
 
 - Component pack selected: `mlops-data-platform`
-- Benchmark line: online_read_latency_p95_ms = pending ms
+- Benchmark line: online_read_latency_p95_ms = 45.645578341645894 ms
 - Voice verdict: aligned
+- Docker tests: 23 passed; 91.09% coverage
+- V2 schema and provenance validation: passed
 
 ## Remaining Risk
 
-The generated plan is a starting point. Re-run this tool or edit the artifacts when code, benchmark, or architecture decisions change.
+Runtime changes invalidate the current evidence and require a new committed source plus three same-image repetitions. Redis or network-serving results require a different comparability key.

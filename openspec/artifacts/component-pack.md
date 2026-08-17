@@ -17,6 +17,7 @@
 ## Preferred Artifacts
 
 - data contract
+- validated batch manifest
 - feature schema
 - model registry record
 - drift baseline
@@ -25,6 +26,7 @@
 ## Rejection Rules
 
 - Reject ML demos with no data validation.
+- Reject feature ingestion that bypasses contract and artifact digest verification.
 - Reject pipelines that cannot run locally.
 - Reject streaming claims without message-rate benchmark.
 

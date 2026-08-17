@@ -12,7 +12,7 @@ program:
     - semantic online latency benchmark
     - validated batch manifest v1 consumer
     - feature-store V2 publication evidence
-status: benchmarked
+status: published
 claim: "One local-first Docker command proves point-in-time correct historical retrieval, zero future leakage, TTL behavior, deterministic Parquet-to-SQLite materialization, exact online values, and warmed Feast SDK p95 latency."
 stack:
   - python-3.12
@@ -45,7 +45,7 @@ decision_brain:
   reuse_improvement_loop:
     source: .portfolio/decision-brain/reuse-improvement-loop.yaml
     review_path: sdd/reuse-improvement-review.md
-    current_status: patched-awaiting-publication-evidence
+    current_status: runtime-validated
   principles:
     coupling_rule: "Temporal truth, feature vectors, scoring, and application orchestration import no Feast, Pandas, PyArrow, SQLite, Redis, cloud SDK, transport, or UI code."
     solid: [srp, ocp, lsp, isp, dip]
@@ -147,7 +147,7 @@ benchmark:
   command: "docker run --rm feature-store-lite"
   result_path: benchmarks/results/summary.json
   publication_result_path: benchmarks/publication/feature-store-v2.json
-  evidence_status: pending
+  evidence_status: current
 release:
   docker: "docker run --rm feature-store-lite"
   no_secret_default_path: true

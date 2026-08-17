@@ -34,7 +34,10 @@ Run the same immutable image at least three times. Aggregate only identical proj
 
 ## Current Evidence
 
-- Image: sha256:06169c2510bc9b542e33a66747f182848078e87de7e82bea5b2695366f5b78e8.
-- Raw runs: benchmarks/results/raw-1.json, raw-2.json, and raw-3.json.
-- Primary result: p95 median 14.985742505814416 ms, min 14.436810590268578 ms, max 16.341100465797354 ms.
+- Source commit: `10641d32af027761aec62c23b0586b3c1a10992f`.
+- Image: `sha256:cf84e303a901636d32baf1900565425f261664a2ce0575267a4daf8b334224bc`.
+- Wheel: `sha256:eae158ceb9e9b1edbb02713025a4ca255ff776f7179b3ad5ac0be35d5efba5a9`.
+- Raw runs: `benchmarks/results/run-1.json`, `run-2.json`, and `run-3.json`; V1 aggregate and V2 publication evidence are committed.
+- Primary result: p95 median 45.645578341645894 ms, min 38.05325084831566 ms, max 53.02158489648719 ms.
+- Throughput: median 1061.9468119765338 entity values/s.
 - Correctness: historical match 1.0, future leaks 0, TTL violations 0, online match 1.0, failures 0 in every run.
