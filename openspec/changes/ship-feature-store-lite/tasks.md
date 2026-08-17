@@ -15,4 +15,4 @@
 - [x] Record immutable image and dependency freeze.
 - [x] Produce and aggregate three full benchmark runs.
 - [x] Pass strict validation.
-- [ ] Synchronize, commit, push, and verify GitHub Actions.
+- [x] Synchronize, commit, push, and verify GitHub Actions.

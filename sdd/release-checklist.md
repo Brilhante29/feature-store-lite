@@ -18,4 +18,4 @@
 - [x] Pinned-runtime harness creates `benchmarks/results/summary.json` and V2 evidence.
 - [x] Strict project validation passes.
 - [x] README number is populated only from committed current evidence.
-- [ ] GitHub Actions is green.
+- [x] GitHub Actions is green.
